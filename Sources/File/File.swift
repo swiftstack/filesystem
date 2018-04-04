@@ -127,6 +127,11 @@ extension File {
         }
         self.init(name: name, at: path)
     }
+
+    convenience
+    public init(string: String) throws {
+        try self.init(path: Path(string: string))
+    }
 }
 
 // MARK: description
