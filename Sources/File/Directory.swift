@@ -1,13 +1,18 @@
 import Platform
 
-public class Directory {
-    public let path: Path
+public final class Directory {
+    public let name: String
+    public let location: Path
+
+    public var path: Path {
+        return location.appending(name)
+    }
 
     var handle: DirectoryHandle?
 
-    public init(path: Path) {
-        self.path = path
-        self.handle = nil
+    public init(name: String, at location: Path) {
+        self.name = name
+        self.location = location
     }
 
     deinit {
@@ -118,7 +123,27 @@ extension Directory {
     }
 }
 
+extension Directory {
+    convenience
+    public init(name: String) {
+        self.init(name: name, at: Directory.current?.path ?? "~/")
+    }
+
+    convenience
+    public init(path: Path) {
+        var path = path
+        let name = path.components.popLast() ?? ""
+        self.init(name: name, at: path)
+    }
+}
+
 // MARK: description / equatable
+
+extension Directory: ExpressibleByStringLiteral {
+    convenience public init(stringLiteral value: String) {
+        self.init(path: Path(string: value))
+    }
+}
 
 extension Directory: CustomStringConvertible {
     public var description: String {
