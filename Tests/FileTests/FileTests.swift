@@ -1,7 +1,9 @@
 import Test
 import Stream
 import Platform
-@testable import File
+import File
+
+@testable import struct File.Permissions
 
 final class FileTests: TestCase {
     var temp = Path(string: "/tmp/FileTests")

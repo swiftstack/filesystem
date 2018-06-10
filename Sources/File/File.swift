@@ -2,7 +2,7 @@ import Stream
 import Platform
 
 public class File {
-    var descriptor: Descriptor?
+    public private(set) var descriptor: Descriptor?
 
     public let name: String
     public let location: Path
@@ -50,7 +50,6 @@ public class File {
         self.descriptor = Descriptor(rawValue: try systemError {
             return Platform.open(path.string, flags, permissions.rawMask)
         })
-
     }
 
     public func open(

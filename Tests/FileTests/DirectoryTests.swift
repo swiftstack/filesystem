@@ -1,6 +1,6 @@
 import Test
 import Platform
-@testable import File
+import File
 
 final class DirectoryTests: TestCase {
     let temp = Path(string: "/tmp/DirectoryTests")
