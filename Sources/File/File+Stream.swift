@@ -9,7 +9,7 @@ extension File: Stream {
         guard let descriptor = descriptor else {
             throw Error.closed
         }
-        return try systemError {
+        return try system {
             return Platform.read(descriptor.rawValue, buffer, byteCount)
         }
     }
@@ -21,7 +21,7 @@ extension File: Stream {
         guard let descriptor = descriptor else {
             throw Error.closed
         }
-        return try systemError {
+        return try system {
             return Platform.write(descriptor.rawValue, buffer, byteCount)
         }
     }
