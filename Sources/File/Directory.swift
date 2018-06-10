@@ -121,6 +121,10 @@ extension Directory {
     public static func remove(at path: Path) throws {
         try Directory(path: path).remove()
     }
+
+    public static func changeWorkingDirectory(to path: Path) throws {
+        try system { chdir(path.string) }
+    }
 }
 
 extension Directory {
