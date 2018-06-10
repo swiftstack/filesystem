@@ -139,6 +139,11 @@ extension Directory {
         let name = path.components.popLast() ?? ""
         self.init(name: name, at: path)
     }
+
+    convenience
+    public init(string: String) {
+        self.init(path: Path(string: string))
+    }
 }
 
 // MARK: description / equatable
