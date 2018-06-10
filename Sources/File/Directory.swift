@@ -102,7 +102,7 @@ extension Directory {
 
         func createParent() throws {
             if !path.components.isEmpty {
-                let path = path.removingLastComponent()
+                let path = path.deletingLastComponent()
                 if !isExists(at: path) {
                     try create(at: path, permissions: .intermediateDirectories)
                 }
