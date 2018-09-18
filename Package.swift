@@ -14,13 +14,16 @@ let package = Package(
             url: "https://github.com/swift-stack/stream.git",
             .branch("master")),
         .package(
+            url: "https://github.com/swift-stack/log.git",
+            .branch("master")),
+        .package(
             url: "https://github.com/swift-stack/test.git",
             .branch("master")),
     ],
     targets: [
         .target(
             name: "File",
-            dependencies: ["Platform", "Stream"]),
+            dependencies: ["Platform", "Stream", "Log"]),
         .testTarget(
             name: "FileTests",
             dependencies: ["Test", "File"]),

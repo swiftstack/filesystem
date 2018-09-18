@@ -52,14 +52,6 @@ public class File {
         })
     }
 
-    public func open(
-        flags: Flags = .read,
-        permissions: Permissions = .file) throws -> BufferedStream<File>
-    {
-        try open(flags, permissions)
-        return BufferedStream(baseStream: self, capacity: bufferSize)
-    }
-
     public func close() throws {
         if let descriptor = descriptor {
             try system { Platform.close(descriptor.rawValue) }
@@ -84,6 +76,20 @@ public class File {
     public func remove() throws {
         try close()
         try system { Platform.remove(path.string) }
+    }
+}
+
+// MARK: stream
+
+extension File {
+    public typealias Stream = BufferedStream<File>
+
+    public func open(
+        flags: Flags = .read,
+        permissions: Permissions = .file) throws -> Stream
+    {
+        try open(flags, permissions)
+        return BufferedStream(baseStream: self, capacity: bufferSize)
     }
 }
 
