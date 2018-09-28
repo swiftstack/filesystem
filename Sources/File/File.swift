@@ -4,7 +4,7 @@ import Platform
 public class File {
     public private(set) var descriptor: Descriptor?
 
-    public let name: String
+    public private(set) var name: String
     public let location: Path
 
     public let bufferSize: Int
@@ -23,6 +23,7 @@ public class File {
     }
 
     public enum Error: String, Swift.Error {
+        case invalidFileName = "Invalid file name"
         case invalidPath = "Invalid file path"
         case alreadyOpened = "The file is already opened"
         case closed = "The file was closed or wasn't opened"
@@ -77,6 +78,15 @@ public class File {
         try close()
         try system { Platform.remove(path.string) }
     }
+
+    public func rename(to name: String) throws {
+        guard name.isValidFileName else {
+            throw Error.invalidFileName
+        }
+        let newPath = location.appending(name).string
+        try system { Platform.rename(path.string, newPath) }
+        self.name = name
+    }
 }
 
 // MARK: stream
@@ -114,6 +124,14 @@ extension File {
             withIntermediateDirectories: withIntermediateDirectories,
             permissions: permissions)
     }
+
+    public static func rename(
+        _ oldName: String,
+        to newName: String,
+        at path: Path) throws
+    {
+        try File(name: oldName, at: path).rename(to: newName)
+    }
 }
 
 // MARK: convenience
@@ -144,5 +162,21 @@ extension File {
 extension File: CustomStringConvertible {
     public var description: String {
         return "file://" + path.description
+    }
+}
+
+// MARK: utils
+
+extension String {
+    var pathSeparator: Character {
+        #if os(Windows)
+        return "\\"
+        #else
+        return "/"
+        #endif
+    }
+
+    var isValidFileName: Bool {
+        return !contains(pathSeparator)
     }
 }
