@@ -27,7 +27,7 @@ class FileLoggerTests: TestCase {
 
     func testFileLogger() {
         scope {
-            let file = File(name: #function, at: temp)
+            let file = try File(name: #function, at: temp)
             assertFalse(file.isExists)
 
             Log.use(try FileLogger(file))
@@ -37,7 +37,7 @@ class FileLoggerTests: TestCase {
         }
 
         scope {
-            let file = File(name: #function, at: temp)
+            let file = try File(name: #function, at: temp)
             let stream = try file.open(flags: .read).inputStream
             let content = try stream.readUntilEnd(as: String.self)
             assertEqual(content, "[info] message\n")
