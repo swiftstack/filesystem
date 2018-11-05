@@ -143,7 +143,7 @@ extension File {
     }
 
     convenience
-    public init(path: Path) throws {
+    public init(at path: Path) throws {
         var path = path
         guard let name = path.components.popLast() else {
             throw Error.invalidPath
@@ -152,8 +152,8 @@ extension File {
     }
 
     convenience
-    public init(string: String) throws {
-        try self.init(path: .init(string))
+    public init(at path: String) throws {
+        try self.init(at: .init(path))
     }
 }
 
