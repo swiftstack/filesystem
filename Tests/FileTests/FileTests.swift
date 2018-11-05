@@ -6,7 +6,7 @@ import File
 @testable import struct File.Permissions
 
 final class FileTests: TestCase {
-    var temp = Path(string: "/tmp/FileTests")
+    var temp = Path("/tmp/FileTests")
 
     override func setUp() {
         try? Directory.create(at: temp)

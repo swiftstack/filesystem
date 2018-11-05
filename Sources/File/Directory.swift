@@ -66,8 +66,7 @@ extension Directory {
         get {
             var directory = [Int8](repeating: 0, count: Int(PATH_MAX))
             guard getcwd(&directory, directory.count) != nil else { return nil }
-            let path = Path(string: String(cString: directory))
-            return Directory(path: path)
+            return Directory(path: .init(String(cString: directory)))
         }
         set {
             if let newValue = newValue {
@@ -144,7 +143,7 @@ extension Directory {
 
     convenience
     public init(string: String) {
-        self.init(path: Path(string: string))
+        self.init(path: .init(string))
     }
 }
 
@@ -152,7 +151,7 @@ extension Directory {
 
 extension Directory: ExpressibleByStringLiteral {
     convenience public init(stringLiteral value: String) {
-        self.init(path: Path(string: value))
+        self.init(path: .init(value))
     }
 }
 
