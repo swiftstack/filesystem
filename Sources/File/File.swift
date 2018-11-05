@@ -30,8 +30,10 @@ public class File {
         case exists = "The file is already exists"
     }
 
-    public init(name: String, at location: Path, bufferSize: Int = 4096) {
-        self.name = name
+    public init<T>(name: T, at location: Path, bufferSize: Int = 4096)
+        where T: StringProtocol
+    {
+        self.name = String(name)
         self.location = location
         self.bufferSize = bufferSize
     }
@@ -138,8 +140,15 @@ extension File {
 
 extension File {
     convenience
-    public init(name: String) {
+    public init<T: StringProtocol>(name: T) {
         self.init(name: name, at: Directory.current?.path ?? "~/")
+    }
+
+    convenience
+    public init<T, U>(name: T, at path: U)
+        where T: StringProtocol, U: StringProtocol
+    {
+        self.init(name: name, at: .init(path))
     }
 
     convenience
@@ -152,16 +161,8 @@ extension File {
     }
 
     convenience
-    public init(at path: String) throws {
+    public init<T: StringProtocol>(at path: T) throws {
         try self.init(at: .init(path))
-    }
-}
-
-// MARK: description
-
-extension File: CustomStringConvertible {
-    public var description: String {
-        return "file://" + path.description
     }
 }
 
@@ -178,5 +179,29 @@ extension String {
 
     var isValidFileName: Bool {
         return !contains(pathSeparator)
+    }
+}
+
+// MARK: Equatable
+
+extension File: Equatable {
+    public static func == (lhs: File, rhs: File) -> Bool {
+        return lhs.name == rhs.name && lhs.location == rhs.location
+    }
+
+    public static func ==<T: StringProtocol>(lhs: File, rhs: T) -> Bool {
+        return lhs.path.string == rhs
+    }
+
+    public static func ==<T: StringProtocol>(lhs: T, rhs: File) -> Bool {
+        return rhs == lhs
+    }
+}
+
+// MARK: CustomStringConvertible
+
+extension File: CustomStringConvertible {
+    public var description: String {
+        return "file://" + path.description
     }
 }
