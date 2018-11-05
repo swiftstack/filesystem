@@ -27,6 +27,12 @@ final class PathTests: TestCase {
         assertEqual(path.string, string)
     }
 
+    func testAppend() {
+        var path = Path(string: "/tmp")
+        path.append("test")
+        assertEqual(path.string, "/tmp/test")
+    }
+
     func testAppending() {
         let path = Path(string: "/tmp")
         let test = path.appending("test")
@@ -36,7 +42,16 @@ final class PathTests: TestCase {
     func testAppendingMany() {
         let path = Path(string: "/tmp")
         let test = path.appending("one/two")
-        assertEqual(test.components.count, 3)
+        assertEqual(test.string, "/tmp/one/two")
+        assertEqual(test.components, ["tmp", "one", "two"])
+    }
+
+    func testAppendPath() {
+        scope {
+            var path = Path(string: "/tmp")
+            path.append(.init(string: "test"))
+            assertEqual(path.string, "/tmp/test")
+        }
     }
 
     func testAppendingPath() {
@@ -50,7 +65,7 @@ final class PathTests: TestCase {
 
     func testDeletingLastComponent() {
         let path = Path(string: "/tmp/test")
-        let tmp = path.deletingLastComponent()
+        let tmp = path.deletingLastComponent
         assertEqual(tmp.string, "/tmp")
     }
 

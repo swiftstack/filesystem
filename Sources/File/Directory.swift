@@ -91,7 +91,7 @@ extension Directory {
 
         func createParent() throws {
             if !path.components.isEmpty {
-                let path = path.deletingLastComponent()
+                let path = path.deletingLastComponent
                 if !isExists(at: path) {
                     try create(at: path, permissions: .intermediateDirectories)
                 }
