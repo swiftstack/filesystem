@@ -14,7 +14,7 @@ final class DirectoryTests: TestCase {
     }
 
     func testDescription() {
-        let directory = Directory(path: "/tmp")
+        let directory = Directory(at: "/tmp")
         assertEqual(directory.description, "/tmp")
     }
 
@@ -30,25 +30,25 @@ final class DirectoryTests: TestCase {
     }
 
     func testPath() {
-        let directory = Directory(path: "/tmp")
+        let directory = Directory(at: "/tmp")
         assertEqual(directory.path, "/tmp")
     }
 
     func testExists() {
-        let directory = Directory(path: temp.appending("testExists"))
+        let directory = Directory(at: temp.appending("testExists"))
         assertFalse(directory.isExists)
     }
 
     func testCreate() {
-        let directory = Directory(path: temp.appending("testCreate"))
+        let directory = Directory(at: temp.appending("testCreate"))
         assertFalse(directory.isExists)
         assertNoThrow(try directory.create())
         assertTrue(directory.isExists)
     }
 
     func testCreateIntermediate() {
-        let directory = Directory(
-            path: temp.appending("testCreateIntermediate/one/two"))
+        let path = temp.appending("testCreateIntermediate/one/two")
+        let directory = Directory(at: path)
 
         assertFalse(directory.isExists)
         assertNoThrow(try directory.create(withIntermediateDirectories: true))
@@ -56,7 +56,7 @@ final class DirectoryTests: TestCase {
     }
 
     func testRemove() {
-        let directory = Directory(path: temp.appending("testRemove"))
+        let directory = Directory(at: temp.appending("testRemove"))
         assertNoThrow(try directory.create())
         assertNoThrow(try directory.remove())
         assertFalse(directory.isExists)
@@ -77,7 +77,7 @@ final class DirectoryTests: TestCase {
         assertEqual(aio, "AIO")
         #endif
 
-        Directory.current = Directory(path: temp)
+        Directory.current = Directory(at: temp)
 
         #if os(macOS)
         assertEqual(Directory.current, "/private/tmp/DirectoryTests")
@@ -109,7 +109,7 @@ final class DirectoryTests: TestCase {
 
     func testInitFromString() {
         let path: String = "/"
-        let directory = Directory(string: path)
+        let directory = Directory(at: path)
         assertTrue(directory.isExists)
     }
 
@@ -119,7 +119,7 @@ final class DirectoryTests: TestCase {
             let dir1 = Directory(name: "dir1", at: temp)
             try dir1.create()
 
-            let directory = Directory(path: temp)
+            let directory = Directory(at: temp)
             let contents = try directory.contents()
 
             assertEqual(contents, [Directory.Entry(
