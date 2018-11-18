@@ -1,6 +1,6 @@
 import Test
-import Foundation
 import File
+import Platform
 
 final class PathTests: TestCase {
     func testDescription() {
@@ -72,7 +72,7 @@ final class PathTests: TestCase {
     func testExpandTilde() {
         scope {
             // TODO: Fix the CI
-            guard let home = ProcessInfo.processInfo.environment["HOME"],
+            guard let home = Environment["HOME"],
                 !home.isEmpty else {
                     return
             }
