@@ -10,37 +10,37 @@ class FileLoggerTests: TestCase {
     var delegate: LogProtocol! = nil
 
     override func setUp() {
-        try? Directory.create(at: temp)
-
         isEnabled = Log.isEnabled
         level = Log.level
         delegate = Log.delegate
+
+        try? Directory.create(at: temp)
     }
 
     override func tearDown() {
-        try? Directory.remove(at: temp)
-
         Log.isEnabled = isEnabled
         Log.level = level
         Log.delegate = delegate
+
+        try? Directory.remove(at: temp)
     }
 
     func testFileLogger() {
         scope {
             let file = try File(name: #function, at: temp)
-            assertFalse(file.isExists)
+            expect(!file.isExists)
 
             Log.use(try FileLogger(file))
             Log.info("message")
 
-            assertTrue(file.isExists)
+            expect(file.isExists)
         }
 
         scope {
             let file = try File(name: #function, at: temp)
             let stream = try file.open(flags: .read).inputStream
             let content = try stream.readUntilEnd(as: String.self)
-            assertEqual(content, "[info] message\n")
+            expect(content == "[info] message\n")
         }
     }
 }
