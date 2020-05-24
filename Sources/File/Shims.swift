@@ -40,9 +40,8 @@ extension UnsafeMutablePointer where Pointee == dirent {
     }
 
     var name: String {
-        let buffer = UnsafeMutableRawBufferPointer(
-            start: &pointee.d_name,
-            count: Int(pointee.d_namlen))
-        return String(decoding: buffer, as: UTF8.self)
+        withUnsafeBytes(of: pointee.d_name) { buffer in
+            .init(decoding: buffer[..<Int(pointee.d_namlen)], as: UTF8.self)
+        }
     }
 }
