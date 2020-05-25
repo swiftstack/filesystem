@@ -15,10 +15,10 @@ extension File {
 extension File.Error {
     init(systemError: SystemError) {
         switch systemError.number {
-        case EEXIST: self = .exists
-        case ENOENT: self = .doesntExist
+        case Int(EEXIST): self = .exists
+        case Int(ENOENT): self = .doesntExist
         // TODO:
-        case EBADF: self = .system(systemError)
+        case Int(EBADF): self = .system(systemError)
         default: self = .system(systemError)
         }
     }
