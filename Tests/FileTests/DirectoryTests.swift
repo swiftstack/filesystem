@@ -13,11 +13,6 @@ final class DirectoryTests: TestCase {
         try? Directory.remove(at: temp)
     }
 
-    func testDescription() {
-        let directory = Directory(at: "/tmp")
-        expect(directory.description == "/tmp")
-    }
-
     func testName() {
         let directory = Directory(name: "test")
         expect(directory.name == "test")
@@ -25,15 +20,17 @@ final class DirectoryTests: TestCase {
 
     func testLocation() {
         let directory = Directory(name: "test", at: "/tmp")
-        expect(directory.name == "test")
-        expect(directory.location.string == "/tmp")
+        expect(directory.location == "/tmp")
     }
 
     func testPath() {
         let directory = Directory(at: "/tmp")
-        expect(directory.location == "/")
-        expect(directory.name == "tmp")
         expect(directory.path == "/tmp")
+    }
+
+    func testDescription() {
+        let directory = Directory(name: "test", at: "/tmp")
+        expect(directory.description == "/tmp/test")
     }
 
     func testExists() {

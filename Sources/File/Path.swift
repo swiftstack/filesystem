@@ -1,7 +1,6 @@
 import Platform
 
 public struct Path {
-    public var type: Type
     public var components: [String]
 
     public enum `Type` {
@@ -9,10 +8,17 @@ public struct Path {
         case relative
     }
 
-    public init<T: Sequence>(type: Type, components: T)
-        where T.Element == String
-    {
-        self.type = type
+    public var type: Type {
+        #if os(Windows)
+        // on windows absolute path starts with 'C:'
+        return components[0].last == ":" ? .absolute : .relative
+        #else
+        // on other platforms absolute path starts with ''
+        return components[0].isEmpty ? .absolute : .relative
+        #endif
+    }
+
+    public init<T: Sequence>(components: T) where T.Element == String {
         self.components = [String](components)
     }
 
@@ -28,8 +34,13 @@ public struct Path {
 
 extension Path {
     public var deletingLastComponent: Path {
-        guard components.count > 0 else { return self }
-        return .init(type: type, components: components.dropLast())
+        guard components.count > 1 else {
+            switch type {
+            case .absolute: return self
+            case .relative: return .init(components: [])
+            }
+        }
+        return .init(components: components.dropLast())
     }
 
     public func appending(_ another: Path) -> Path {
@@ -41,19 +52,24 @@ extension Path {
 
 extension Path {
     public var string: String {
-        let path = components.joined(separator: "/")
-        switch type {
-        case .absolute: return "/" + path
-        case .relative: return path
+        guard components.count > 1 || !components[0].isEmpty else {
+            switch type {
+            case .absolute: return "/"
+            case .relative: return "."
+            }
         }
+        return components.joined(separator: "/")
     }
 
     public init<T: StringProtocol>(_ path: T) {
-        switch path.first {
-        case "/": self.type = .absolute
-        default: self.type = .relative
+        guard path != "/" else {
+            self.components = [""]
+            return
         }
-        self.components = path.split(separator: "/").map { String($0) }
+        self.components = path.split(
+            separator: "/",
+            omittingEmptySubsequences: false
+        ).map { String($0) }
     }
 
     public mutating func append<T: StringProtocol>(_ another: T) {
@@ -77,8 +93,10 @@ extension Path {
         guard let home = Environment["HOME"] else {
             throw Error.cantGetHome
         }
-        let homeComponents = home.split(separator: "/").map(String.init)
-        self.type = .absolute
+        let homeComponents = home.split(
+            separator: "/",
+            omittingEmptySubsequences: false
+        ).map(String.init)
         self.components = homeComponents + components[1...]
     }
 

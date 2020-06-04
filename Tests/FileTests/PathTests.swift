@@ -3,6 +3,12 @@ import File
 import Platform
 
 final class PathTests: TestCase {
+    func testComponents() {
+        let path = Path("/")
+        expect(path == "/")
+        expect(path.components == [""])
+    }
+
     func testDescription() {
         let path = Path("/tmp/test")
         expect(path.description == "/tmp/test")
@@ -10,7 +16,7 @@ final class PathTests: TestCase {
 
     func testAbsolutePath() {
         let path = Path("/tmp/test")
-        expect(path.components == ["tmp", "test"])
+        expect(path.components == ["", "tmp", "test"])
         expect(path.type == .absolute)
     }
 
@@ -23,7 +29,7 @@ final class PathTests: TestCase {
     func testString() {
         let string = "/tmp/test"
         let path = Path(string)
-        expect(path.components == ["tmp", "test"])
+        expect(path.components == ["", "tmp", "test"])
         expect(path.string == string)
     }
 
@@ -43,7 +49,7 @@ final class PathTests: TestCase {
         let path = Path("/tmp")
         let test = path.appending("one/two")
         expect(test.string == "/tmp/one/two")
-        expect(test.components == ["tmp", "one", "two"])
+        expect(test.components == ["", "tmp", "one", "two"])
     }
 
     func testAppendPath() {
