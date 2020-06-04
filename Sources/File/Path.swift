@@ -18,6 +18,14 @@ public struct Path {
         #endif
     }
 
+    static var separator: Character {
+        #if os(Windows)
+        return "\\"
+        #else
+        return "/"
+        #endif
+    }
+
     public init<T: Sequence>(components: T) where T.Element == String {
         self.components = [String](components)
     }
@@ -52,22 +60,23 @@ extension Path {
 
 extension Path {
     public var string: String {
-        guard components.count > 1 || !components[0].isEmpty else {
-            switch type {
-            case .absolute: return "/"
-            case .relative: return "."
-            }
+        switch components.count {
+        case 1 where type == .absolute:
+            return components[0] + String(Path.separator)
+        default:
+            return components.joined(separator: String(Path.separator))
         }
-        return components.joined(separator: "/")
     }
 
     public init<T: StringProtocol>(_ path: T) {
-        guard path != "/" else {
-            self.components = [""]
+        #if !os(Windows)
+        guard path != String(Path.separator) else {
+            components = [""]
             return
         }
-        self.components = path.split(
-            separator: "/",
+        #endif
+        components = path.split(
+            separator: Path.separator,
             omittingEmptySubsequences: false
         ).map { String($0) }
     }
@@ -94,7 +103,7 @@ extension Path {
             throw Error.cantGetHome
         }
         let homeComponents = home.split(
-            separator: "/",
+            separator: Path.separator,
             omittingEmptySubsequences: false
         ).map(String.init)
         self.components = homeComponents + components[1...]

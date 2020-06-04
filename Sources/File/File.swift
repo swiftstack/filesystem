@@ -177,16 +177,8 @@ extension File {
 // MARK: utils
 
 extension String {
-    var pathSeparator: Character {
-        #if os(Windows)
-        return "\\"
-        #else
-        return "/"
-        #endif
-    }
-
     var isValidFileName: Bool {
-        return !contains(pathSeparator)
+        return !contains(Path.separator)
     }
 }
 
