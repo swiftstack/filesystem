@@ -8,11 +8,11 @@ public class File {
     public let location: Path
 
     public var path: Path {
-        return location.appending(name.value)
+        location.appending(name.value)
     }
 
     public var isExists: Bool {
-        return File.isExists(at: path)
+        access(path.string, F_OK) == 0
     }
 
     public var permissions: Permissions? {
@@ -94,11 +94,11 @@ public class File {
 
 extension File {
     public static func isExists(at path: Path) -> Bool {
-        return access(path.string, F_OK) == 0
+        (try? File(at: path).isExists) ?? false
     }
 
     public static func remove(at path: Path) throws {
-        try system { Platform.remove(path.string) }
+        try File(at: path).remove()
     }
 
     public static func create(
@@ -112,12 +112,8 @@ extension File {
             permissions: permissions)
     }
 
-    public static func rename(
-        _ oldName: Name,
-        to newName: Name,
-        at path: Path) throws
-    {
-        try File(name: oldName, at: path).rename(to: newName)
+    public static func rename(_ old: Name, to new: Name, at path: Path) throws {
+        try File(name: old, at: path).rename(to: new)
     }
 }
 
