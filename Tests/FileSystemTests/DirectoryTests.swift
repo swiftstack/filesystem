@@ -1,6 +1,6 @@
 import Test
 import Platform
-import File
+import FileSystem
 
 final class DirectoryTests: TestCase {
     let temp = Path("/tmp/DirectoryTests")

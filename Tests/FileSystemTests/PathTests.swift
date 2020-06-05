@@ -1,5 +1,5 @@
 import Test
-import File
+import FileSystem
 import Platform
 
 final class PathTests: TestCase {

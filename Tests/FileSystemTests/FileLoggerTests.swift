@@ -1,5 +1,5 @@
 import Test
-import File
+import FileSystem
 @testable import Log
 
 class FileLoggerTests: TestCase {

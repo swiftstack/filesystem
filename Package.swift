@@ -2,11 +2,11 @@
 import PackageDescription
 
 let package = Package(
-    name: "File",
+    name: "FileSystem",
     products: [
         .library(
-            name: "File",
-            targets: ["File"]),
+            name: "FileSystem",
+            targets: ["FileSystem"]),
     ],
     dependencies: [
         .package(name: "Platform"),
@@ -16,11 +16,11 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "File",
+            name: "FileSystem",
             dependencies: ["Platform", "Stream", "Log"]),
         .testTarget(
-            name: "FileTests",
-            dependencies: ["Test", "File"]),
+            name: "FileSystemTests",
+            dependencies: ["Test", "FileSystem"]),
     ]
 )
 
