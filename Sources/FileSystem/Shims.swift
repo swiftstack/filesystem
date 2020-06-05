@@ -6,22 +6,13 @@ func lseek(_ handle: Int32, _ offset: Int, _ origin: Int32) -> Int {
 }
 #endif
 
+#if os(Linux)
 extension dirent {
-    #if os(Linux)
     var d_namlen: Int {
-        var d_name = self.d_name
-        let buffer = UnsafeMutableRawBufferPointer(
-            start: UnsafeMutableRawPointer(&d_name),
-            count: Int(NAME_MAX))
-        for i in 0..<buffer.count {
-            if buffer[i] == 0 {
-                return i
-            }
-        }
-        return 0
+        withUnsafeBytes(of: d_name) { $0.firstIndex(of: 0) } ?? 0
     }
-    #endif
 }
+#endif
 
 extension UnsafeMutablePointer where Pointee == dirent {
     var isDirectory: Bool {
