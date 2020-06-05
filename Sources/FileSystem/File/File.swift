@@ -41,7 +41,7 @@ public class File {
         return Int(st.st_size)
     }
 
-    private func open(
+    func open(
         _ flags: Flags = .read,
         _ permissions: Permissions = .file) throws
     {
@@ -87,25 +87,6 @@ public class File {
         let newPath = location.appending(name.value)
         try system { Platform.rename(path.string, newPath.string) }
         self.name = name
-    }
-}
-
-// MARK: stream
-
-extension File {
-    public typealias Stream = BufferedStream<File>
-
-    public func open(
-        flags: Flags = .read,
-        permissions: Permissions = .file,
-        bufferSize: Int = 4096) throws -> Stream
-    {
-        do {
-            try open(flags, permissions)
-            return BufferedStream(baseStream: self, capacity: bufferSize)
-        } catch let error as SystemError {
-            throw File.Error(systemError: error)
-        }
     }
 }
 

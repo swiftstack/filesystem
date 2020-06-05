@@ -6,8 +6,7 @@ extension String {
         reading file: File,
         as encoding: T.Type) throws
     {
-        let reader = try file.open()
-        try self.init(readingFrom: reader.inputStream, as: encoding)
+        try self.init(readingFrom: file.open(), as: encoding)
         try file.close()
     }
 
