@@ -4,13 +4,13 @@ import Platform
 public class File {
     public private(set) var descriptor: Descriptor?
 
-    public private(set) var name: String
+    public private(set) var name: Name
     public let location: Path
 
     public let bufferSize: Int
 
     public var path: Path {
-        return location.appending(name)
+        return location.appending(name.value)
     }
 
     public var isExists: Bool {
@@ -22,13 +22,11 @@ public class File {
         set { try? newValue.set(for: descriptor) }
     }
 
-    public init<T>(name: T, at location: Path, bufferSize: Int = 4096) throws
-        where T: StringProtocol
-    {
-        guard !name.isEmpty else {
+    public init(name: Name, at location: Path, bufferSize: Int = 4096) throws {
+        guard name.isValid else {
             throw Error.invalidName
         }
-        self.name = String(name)
+        self.name = name
         self.location = location
         self.bufferSize = bufferSize
     }
@@ -85,12 +83,12 @@ public class File {
         try system { Platform.remove(path.string) }
     }
 
-    public func rename(to name: String) throws {
-        guard name.isValidFileName else {
+    public func rename(to name: Name) throws {
+        guard name.isValid else {
             throw Error.invalidName
         }
-        let newPath = location.appending(name).string
-        try system { Platform.rename(path.string, newPath) }
+        let newPath = location.appending(name.value)
+        try system { Platform.rename(path.string, newPath.string) }
         self.name = name
     }
 }
@@ -125,7 +123,7 @@ extension File {
     }
 
     public static func create(
-        _ name: String,
+        _ name: Name,
         at path: Path,
         withIntermediateDirectories: Bool,
         permissions: Permissions = .file) throws
@@ -136,8 +134,8 @@ extension File {
     }
 
     public static func rename(
-        _ oldName: String,
-        to newName: String,
+        _ oldName: Name,
+        to newName: Name,
         at path: Path) throws
     {
         try File(name: oldName, at: path).rename(to: newName)
@@ -153,10 +151,17 @@ extension File {
     }
 
     convenience
+    public init<T>(name: T, at path: Path) throws
+        where T: StringProtocol
+    {
+        try self.init(name: .init(name), at: path)
+    }
+
+    convenience
     public init<T, U>(name: T, at path: U) throws
         where T: StringProtocol, U: StringProtocol
     {
-        try self.init(name: name, at: .init(path))
+        try self.init(name: .init(name), at: .init(path))
     }
 
     convenience
@@ -165,20 +170,12 @@ extension File {
         guard let name = path.deleteLastComponent() else {
             throw Error.invalidPath
         }
-        try self.init(name: name.value, at: path)
+        try self.init(name: .init(name), at: path)
     }
 
     convenience
     public init<T: StringProtocol>(at path: T) throws {
         try self.init(at: .init(path))
-    }
-}
-
-// MARK: utils
-
-extension String {
-    var isValidFileName: Bool {
-        return !contains(Path.separator)
     }
 }
 
