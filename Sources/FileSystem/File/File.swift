@@ -7,8 +7,6 @@ public class File {
     public private(set) var name: Name
     public let location: Path
 
-    public let bufferSize: Int
-
     public var path: Path {
         return location.appending(name.value)
     }
@@ -22,13 +20,12 @@ public class File {
         set { try? newValue.set(for: descriptor) }
     }
 
-    public init(name: Name, at location: Path, bufferSize: Int = 4096) throws {
+    public init(name: Name, at location: Path) throws {
         guard name.isValid else {
             throw Error.invalidName
         }
         self.name = name
         self.location = location
-        self.bufferSize = bufferSize
     }
 
     deinit {
@@ -100,7 +97,8 @@ extension File {
 
     public func open(
         flags: Flags = .read,
-        permissions: Permissions = .file) throws -> Stream
+        permissions: Permissions = .file,
+        bufferSize: Int = 4096) throws -> Stream
     {
         do {
             try open(flags, permissions)
