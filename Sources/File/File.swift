@@ -165,7 +165,7 @@ extension File {
         guard let name = path.deleteLastComponent() else {
             throw Error.invalidPath
         }
-        try self.init(name: name, at: path)
+        try self.init(name: name.value, at: path)
     }
 
     convenience

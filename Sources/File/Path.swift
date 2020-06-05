@@ -1,7 +1,7 @@
 import Platform
 
 public struct Path {
-    public var components: [String]
+    public var components: [Component]
 
     public enum `Type` {
         case absolute
@@ -26,8 +26,15 @@ public struct Path {
         #endif
     }
 
-    public init<T: Sequence>(components: T) where T.Element == String {
-        self.components = [String](components)
+    public init<T: Collection>(components: T) where T.Element == Component {
+        self.components = !components.isEmpty
+            ? [Component](components)
+            : ["."]
+    }
+
+
+    public mutating func append(_ component: Component) {
+        components.append(component)
     }
 
     public mutating func append(_ another: Path) {
@@ -35,7 +42,7 @@ public struct Path {
     }
 
     @discardableResult
-    public mutating func deleteLastComponent() -> String? {
+    public mutating func deleteLastComponent() -> Path.Component? {
         return components.popLast()
     }
 }
@@ -51,6 +58,12 @@ extension Path {
         return .init(components: components.dropLast())
     }
 
+    public func appending(_ component: Component) -> Path {
+        var path = self
+        path.append(component)
+        return path
+    }
+
     public func appending(_ another: Path) -> Path {
         var path = self
         path.append(another)
@@ -62,9 +75,11 @@ extension Path {
     public var string: String {
         switch components.count {
         case 1 where type == .absolute:
-            return components[0] + String(Path.separator)
+            return components[0].value + String(Path.separator)
         default:
-            return components.joined(separator: String(Path.separator))
+            return components
+                .map { $0.value }
+                .joined(separator: String(Path.separator))
         }
     }
 
@@ -78,15 +93,17 @@ extension Path {
         components = path.split(
             separator: Path.separator,
             omittingEmptySubsequences: false
-        ).map { String($0) }
+        ).map { Component($0) }
     }
 
     public mutating func append<T: StringProtocol>(_ another: T) {
-        append(.init(another))
+        components.append(contentsOf: [Component](another))
     }
 
     public func appending<T: StringProtocol>(_ another: T) -> Path {
-        return appending(.init(another))
+        var path = self
+        path.append(another)
+        return path
     }
 }
 
@@ -105,7 +122,7 @@ extension Path {
         let homeComponents = home.split(
             separator: Path.separator,
             omittingEmptySubsequences: false
-        ).map(String.init)
+        ).map(Component.init)
         self.components = homeComponents + components[1...]
     }
 

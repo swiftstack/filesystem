@@ -133,7 +133,7 @@ extension Directory {
     public init(at path: Path) {
         var path = path
         let name = path.deleteLastComponent() ?? ""
-        self.init(name: name, at: path)
+        self.init(name: name.value, at: path)
     }
 
     convenience

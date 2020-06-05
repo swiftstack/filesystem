@@ -52,9 +52,22 @@ final class PathTests: TestCase {
         expect(test.components == ["", "tmp", "one", "two"])
     }
 
+    func testAppendComponent() {
+        var path = Path("/tmp")
+        path.append("test")
+        expect(path.string == "/tmp/test")
+    }
+
+    func testAppendingComponent() {
+        let path = Path("/tmp")
+        let test = Path.Component("test")
+        let combined = path.appending(test)
+        expect(combined.string == "/tmp/test")
+    }
+
     func testAppendPath() {
         var path = Path("/tmp")
-        path.append(.init("test"))
+        path.append(Path("test"))
         expect(path.string == "/tmp/test")
     }
 
