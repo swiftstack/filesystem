@@ -15,6 +15,13 @@ public final class Directory {
         self.location = location
     }
 
+    convenience
+    public init(at path: Path) throws {
+        var path = path
+        let name = path.deleteLastComponent() ?? .empty
+        try self.init(name: .init(name), at: path)
+    }
+
     deinit {
         try? close()
     }
@@ -125,30 +132,6 @@ extension Directory {
     public static func contents(at path: Path) throws -> [Entry] {
         let iterator = try DirectoryContentsIterator(at: path)
         return [Entry](IteratorSequence(iterator))
-    }
-}
-
-extension Directory {
-    convenience
-    public init(at path: Path) {
-        var path = path
-        let name = path.deleteLastComponent() ?? ""
-        self.init(name: name.value, at: path)
-    }
-
-    convenience
-    public init<T: StringProtocol>(at path: T) {
-        self.init(at: .init(path))
-    }
-
-    convenience
-    public init<T: StringProtocol>(name: T) {
-        self.init(name: name, at: Directory.current?.path ?? "~/")
-    }
-
-    convenience
-    public init<T: StringProtocol, U: StringProtocol>(name: T, at path: U) {
-        self.init(name: name, at: .init(path))
     }
 }
 
