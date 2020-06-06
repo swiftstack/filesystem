@@ -15,7 +15,7 @@ extension String {
         readingFrom reader: StreamReader,
         as encoding: T.Type) throws
     {
-        self = try reader.read(while: { _ in true }) { bytes in
+        self = try reader.readUntilEnd() { bytes in
             let bytes = bytes.bindMemory(to: T.CodeUnit.self)
             return String(decoding: bytes, as: encoding)
         }

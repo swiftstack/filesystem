@@ -32,7 +32,6 @@ public struct Path {
             : [.current]
     }
 
-
     public mutating func append(_ component: Component) {
         components.append(component)
     }
