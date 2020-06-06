@@ -6,11 +6,10 @@ extension Path {
             value.isEmpty
         }
 
-        public var isValid: Bool {
-            !value.contains(Path.separator) && !value.contains(":")
-        }
-
-        public init<T: StringProtocol>(_ value: T) {
+        public init<T: StringProtocol>(_ value: T) throws {
+            guard !value.contains(Path.separator) && !value.contains(":") else {
+                throw File.Error.invalidPath
+            }
             self.value = .init(value)
         }
     }

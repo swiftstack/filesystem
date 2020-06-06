@@ -73,7 +73,7 @@ extension Directory {
         get {
             var directory = [Int8](repeating: 0, count: Int(PATH_MAX))
             guard getcwd(&directory, directory.count) != nil else { return nil }
-            return Directory(at: String(cString: directory))
+            return try? Directory(at: String(cString: directory))
         }
         set {
             if let newValue = newValue {

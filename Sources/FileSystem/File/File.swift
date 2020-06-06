@@ -20,10 +20,7 @@ public class File {
         set { try? newValue.set(for: descriptor) }
     }
 
-    public init(name: Name, at location: Path) throws {
-        guard name.isValid else {
-            throw Error.invalidName
-        }
+    public init(name: Name, at location: Path) {
         self.name = name
         self.location = location
     }
@@ -81,9 +78,6 @@ public class File {
     }
 
     public func rename(to name: Name) throws {
-        guard name.isValid else {
-            throw Error.invalidName
-        }
         let newPath = location.appending(name.value)
         try system { Platform.rename(path.string, newPath.string) }
         self.name = name
@@ -93,8 +87,12 @@ public class File {
 // MARK: static
 
 extension File {
-    public static func isExists(at path: Path) -> Bool {
-        (try? File(at: path).isExists) ?? false
+    public static func isExists(name: File.Name, at path: Path) -> Bool {
+        File(name: name, at: path).isExists
+    }
+
+    public static func isExists(at path: Path) throws -> Bool {
+        try File(at: path).isExists
     }
 
     public static func remove(at path: Path) throws {

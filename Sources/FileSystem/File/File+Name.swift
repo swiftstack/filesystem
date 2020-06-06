@@ -8,14 +8,19 @@ extension File {
             return String(value[index...])
         }
 
-        public var isValid: Bool { !value.isEmpty && value.isValid }
-
-        public init(_ value: Path.Component) {
+        public init(_ value: Path.Component) throws {
+            guard !value.isEmpty else {
+                throw Error.invalidName
+            }
             self.value = value
         }
+    }
+}
 
-        public init<T: StringProtocol>(_ value: T) {
-            self.value = .init(value)
-        }
+// MARK: Convenience
+
+extension File.Name {
+    public init<T: StringProtocol>(_ value: T) throws {
+        try self.init(.init(value))
     }
 }

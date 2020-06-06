@@ -3,7 +3,7 @@ import Platform
 import FileSystem
 
 final class DirectoryTests: TestCase {
-    let temp = Path("/tmp/DirectoryTests")
+    let temp = try! Path("/tmp/DirectoryTests")
 
     override func setUp() {
         try? Directory.create(at: temp)
@@ -18,36 +18,36 @@ final class DirectoryTests: TestCase {
         expect(name == "test")
     }
 
-    func testLocation() {
-        let directory = Directory(name: "test", at: "/tmp")
+    func testLocation() throws {
+        let directory = try Directory(name: "test", at: "/tmp")
         expect(directory.location == "/tmp")
     }
 
-    func testPath() {
-        let directory = Directory(at: "/tmp")
+    func testPath() throws {
+        let directory = try Directory(at: "/tmp")
         expect(directory.path == "/tmp")
     }
 
-    func testDescription() {
-        let directory = Directory(name: "test", at: "/tmp")
+    func testDescription() throws {
+        let directory = try Directory(name: "test", at: "/tmp")
         expect(directory.description == "/tmp/test")
     }
 
-    func testExists() {
-        let directory = Directory(at: temp.appending("testExists"))
+    func testExists() throws {
+        let directory = try Directory(at: temp.appending("testExists"))
         expect(!directory.isExists)
     }
 
     func testCreate() throws {
-        let directory = Directory(at: temp.appending("testCreate"))
+        let directory = try Directory(at: temp.appending("testCreate"))
         expect(!directory.isExists)
         try directory.create()
         expect(directory.isExists)
     }
 
     func testCreateIntermediate() throws {
-        let path = temp.appending("testCreateIntermediate/one/two")
-        let directory = Directory(at: path)
+        let path = try temp.appending("testCreateIntermediate/one/two")
+        let directory = try Directory(at: path)
 
         expect(!directory.isExists)
         try directory.create(withIntermediateDirectories: true)
@@ -55,28 +55,28 @@ final class DirectoryTests: TestCase {
     }
 
     func testRemove() throws {
-        let directory = Directory(at: temp.appending("testRemove"))
+        let directory = try Directory(at: temp.appending("testRemove"))
         try directory.create()
         try directory.remove()
         expect(!directory.isExists)
     }
 
     func testRemoveWithContent() throws {
-        let path = temp.appending("testRemoveWithContent")
+        let path = try temp.appending("testRemoveWithContent")
         try Directory.create(at: path.appending("one"))
         try Directory.remove(at: path)
         expect(!Directory.isExists(at: path))
     }
 
-    func testCurrent() {
+    func testCurrent() throws {
         #if Xcode
         expect(Directory.current == "/private/tmp")
         #else
-        let aio = Directory.current?.path.string.suffix(3).uppercased()
+        let aio = try Directory.current?.path.string.suffix(3).uppercased()
         expect(aio == "AIO")
         #endif
 
-        Directory.current = Directory(at: temp)
+        Directory.current = try Directory(at: temp)
 
         #if os(macOS)
         expect(Directory.current == "/private/tmp/DirectoryTests")
@@ -104,36 +104,41 @@ final class DirectoryTests: TestCase {
         try Directory.changeWorkingDirectory(to: previous.path)
     }
 
-    func testInitFromString() {
+    func testInitFromString() throws {
         let path: String = "/"
-        let directory = Directory(at: path)
+        let directory = try Directory(at: path)
         expect(directory.isExists)
     }
 
     func testContents() throws {
-        let temp = self.temp.appending(#function)
-        let dir1 = Directory(name: "dir1", at: temp)
+        let temp = try self.temp.appending(#function)
+        let dir1 = try Directory(name: "dir1", at: temp.string)
         try dir1.create()
 
-        let directory = Directory(at: temp)
+        let directory = try Directory(at: temp)
         let contents = try directory.contents()
 
         expect(contents == [.directory(dir1)])
     }
 
-    func testEquatable() {
-        expect(Directory(at: "/tmp") != Directory(at: "/"))
-        expect(Directory(at: "/") == Directory(at: "/"))
-        expect(Directory("/") == String("/"))
-        expect(String("/") == Directory("/"))
+    func testEquatable() throws {
+        let rootDirectoryString = "/"
+        let tempDirectoryString = "/tmp"
+
+        let rootDirectory = try Directory(at: rootDirectoryString)
+        let tempDirectory = try Directory(at: tempDirectoryString)
+
+        expect(rootDirectory == rootDirectory)
+        expect(tempDirectory != rootDirectory)
+
+        expect(rootDirectory == rootDirectoryString)
+        expect(rootDirectoryString == rootDirectory)
     }
 
-    func testStringProtocol() {
-        _ = Directory(at: "/tmp"[...])
-        _ = Directory(name: "tmp"[...])
-        _ = Directory(name: "tmp"[...], at: "/"[...])
-        _ = Directory(name: "tmp"[...], at: Path("/"))
-        expect(Directory(at: "/") == String("/")[...])
-        expect(String("/")[...] == Directory(at: "/"))
+    func testStringProtocol() throws {
+        _ = try Directory(at: "/tmp"[...])
+        _ = try Directory(name: "tmp"[...], at: "/"[...])
+        expect(try Directory(at: "/") == String("/")[...])
+        expect(String("/")[...] == (try Directory(at: "/")))
     }
 }

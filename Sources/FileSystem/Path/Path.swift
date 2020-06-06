@@ -83,26 +83,23 @@ extension Path {
         }
     }
 
-    public init<T: StringProtocol>(_ path: T) {
+    public init<T: StringProtocol>(_ path: T) throws {
         #if !os(Windows)
         guard path != String(Path.separator) else {
             components = [""]
             return
         }
         #endif
-        components = path.split(
-            separator: Path.separator,
-            omittingEmptySubsequences: false
-        ).map { Component($0) }
+        components = try [Component](path)
     }
 
-    public mutating func append<T: StringProtocol>(_ another: T) {
-        components.append(contentsOf: [Component](another))
+    public mutating func append<T: StringProtocol>(_ another: T) throws {
+        try components.append(contentsOf: [Component](another))
     }
 
-    public func appending<T: StringProtocol>(_ another: T) -> Path {
+    public func appending<T: StringProtocol>(_ another: T) throws -> Path {
         var path = self
-        path.append(another)
+        try path.append(another)
         return path
     }
 }
@@ -119,10 +116,7 @@ extension Path {
         guard let home = Environment["HOME"] else {
             throw Error.cantGetHome
         }
-        let homeComponents = home.split(
-            separator: Path.separator,
-            omittingEmptySubsequences: false
-        ).map(Component.init)
+        let homeComponents = try [Component](home)
         self.components = homeComponents + components[1...]
     }
 
@@ -137,7 +131,7 @@ extension Path {
 
 extension Path: Equatable {
     public static func ==<T: StringProtocol>(lhs: Path, rhs: T) -> Bool {
-        return lhs == Path(rhs)
+        return lhs.string == rhs
     }
 
     public static func ==<T: StringProtocol>(lhs: T, rhs: Path) -> Bool {

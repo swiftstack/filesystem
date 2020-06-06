@@ -6,7 +6,7 @@ import FileSystem
 @testable import struct FileSystem.Permissions
 
 final class FileTests: TestCase {
-    var temp = Path("/tmp/FileTests")
+    var temp = try! Path("/tmp/FileTests")
 
     override func setUp() {
         try? Directory.create(at: temp)
@@ -17,32 +17,35 @@ final class FileTests: TestCase {
     }
 
     func testName() throws {
-        let file = try File(name: "file")
-        expect(file.name == "file")
+        let name = try File.Name("file")
+        expect(name == "file")
         expect(throws: File.Error.invalidName) {
-            _ = try File(name: "")
+            _ = try File.Name("")
         }
     }
 
     func testInit() throws {
+        let path = try temp.appending(#function)
         let file = try File(name: #function, at: temp)
         expect(file.name == #function)
         expect(file.location == temp)
-        expect(file.path == temp.appending(#function))
+        expect(file.path == path)
     }
 
     func testInitPath() throws {
-        let file = try File(at: temp.appending(#function))
+        let path = try temp.appending(#function)
+        let file = try File(at: path)
         expect(file.name == #function)
         expect(file.location == temp)
-        expect(file.path == temp.appending(#function))
+        expect(file.path == path)
     }
 
     func testInitString() throws {
-        let file = try File(at: temp.appending(#function).string)
+        let path = try temp.appending(#function)
+        let file = try File(at: path.string)
         expect(file.name == #function)
         expect(file.location == temp)
-        expect(file.path == temp.appending(#function))
+        expect(file.path == path)
     }
 
     func testDescription() throws {
@@ -98,20 +101,23 @@ final class FileTests: TestCase {
         }
     }
 
-    func testRename() {
+    func testRename() throws {
+        let originalName = try File.Name("test.file")
+        let newName = try File.Name("new-test.file")
+
         scope {
-            let file = try File(name: "test.move", at: temp)
+            let file = File(name: originalName, at: temp)
             try file.create()
 
-            try file.rename(to: "new-test.move")
-            expect(!File.isExists(at: temp.appending("test.move")))
-            expect(File.isExists(at: temp.appending("new-test.move")))
+            try file.rename(to: newName)
+            expect(!File.isExists(name: originalName, at: temp))
+            expect(File.isExists(name: newName, at: temp))
         }
 
         scope {
-            try File.rename("new-test.move", to: "test.move", at: temp)
-            expect(File.isExists(at: temp.appending("test.move")))
-            expect(!File.isExists(at: temp.appending("new-test.move")))
+            try File.rename(newName, to: originalName, at: temp)
+            expect(File.isExists(name: originalName, at: temp))
+            expect(!File.isExists(name: newName, at: temp))
         }
     }
 
@@ -158,7 +164,6 @@ final class FileTests: TestCase {
 
     func testStringProtocol() throws {
         _ = try File(at: "/file"[...])
-        _ = try File(name: "file"[...])
         _ = try File(name: "file"[...], at: "/"[...])
         _ = try File(name: "file"[...], at: Path("/"))
         expect(try File(at: "/file") == String("/file")[...])

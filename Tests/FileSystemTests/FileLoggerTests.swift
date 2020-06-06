@@ -3,7 +3,7 @@ import FileSystem
 @testable import Log
 
 class FileLoggerTests: TestCase {
-    var temp = Path("/tmp/FileLoggerTests")
+    var temp = try! Path("/tmp/FileLoggerTests")
 
     var isEnabled: Bool! = nil
     var level: Log.Message.Level! = nil
