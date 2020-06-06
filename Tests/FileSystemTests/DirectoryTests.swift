@@ -13,9 +13,9 @@ final class DirectoryTests: TestCase {
         try? Directory.remove(at: temp)
     }
 
-    func testName() {
-        let directory = Directory(name: "test")
-        expect(directory.name == "test")
+    func testName() throws {
+        let name = try Directory.Name("test")
+        expect(name == "test")
     }
 
     func testLocation() {

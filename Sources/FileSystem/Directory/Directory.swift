@@ -1,17 +1,17 @@
 import Platform
 
 public final class Directory {
-    public let name: String
+    public let name: Name
     public let location: Path
 
     public var path: Path {
-        return location.appending(name)
+        return location.appending(name.value)
     }
 
     var handle: DirectoryHandle?
 
-    public init<T: StringProtocol>(name: T, at location: Path) {
-        self.name = String(name)
+    public init(name: Name, at location: Path) {
+        self.name = name
         self.location = location
     }
 
@@ -169,7 +169,7 @@ extension Directory: Equatable {
     }
 
     public static func ==<T: StringProtocol>(lhs: Directory, rhs: T) -> Bool {
-        return lhs == Directory(at: rhs)
+        return lhs.path.string == rhs
     }
 
     public static func ==<T: StringProtocol>(lhs: T, rhs: Directory) -> Bool {
