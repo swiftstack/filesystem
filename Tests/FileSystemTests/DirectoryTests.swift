@@ -118,9 +118,7 @@ final class DirectoryTests: TestCase {
         let directory = Directory(at: temp)
         let contents = try directory.contents()
 
-        expect(contents == [Directory.Entry(
-            path: temp.appending("dir1"),
-            isDirectory: true)])
+        expect(contents == [.directory(dir1)])
     }
 
     func testEquatable() {

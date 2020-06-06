@@ -109,9 +109,9 @@ extension Directory {
     public static func remove(at path: Path) throws {
         let iterator = try DirectoryContentsIterator(at: path)
         while let entry = iterator.next() {
-            switch entry.isDirectory {
-            case true: try Directory.remove(at: entry.path)
-            case false: unlink(entry.path.string)
+            switch entry {
+            case .directory(let directory): try directory.remove()
+            case .file(let file): try file.remove()
             }
         }
         iterator.close()
@@ -182,61 +182,5 @@ extension Directory: Equatable {
 extension Directory: CustomStringConvertible {
     public var description: String {
         return path.description
-    }
-}
-
-// MARK: DirectoryContentsIterator
-
-extension Directory {
-    public struct Entry: Equatable {
-        public let path: Path
-        public let isDirectory: Bool
-
-        public init(path: Path, isDirectory: Bool) {
-            self.path = path
-            self.isDirectory = isDirectory
-        }
-    }
-}
-
-public class DirectoryContentsIterator: IteratorProtocol {
-    let path: Path
-    var handle: DirectoryHandle?
-
-    init(at path: Path) throws {
-        self.path = path
-        self.handle = try system { opendir(path.string) }
-    }
-
-    deinit {
-        close()
-        handle = nil
-    }
-
-    func close() {
-        guard let handle = handle else {
-            return
-        }
-        closedir(handle)
-        self.handle = nil
-    }
-
-    public func next() -> Directory.Entry? {
-        guard let handle = handle else {
-            return nil
-        }
-
-        while let entry = readdir(handle) {
-            // skip "." and ".."
-            if entry.isCurrentDirectory || entry.isParentDirectory {
-                continue
-            }
-            return Directory.Entry(
-                path: path.appending(entry.name),
-                isDirectory: entry.isDirectory)
-        }
-
-        close()
-        return nil
     }
 }
