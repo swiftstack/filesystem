@@ -26,6 +26,15 @@ extension Array where Element == Path.Component {
     }
 }
 
+// MARK: Static
+
+extension Path.Component {
+    public static let empty = try! Path.Component("")
+    public static let home = try! Path.Component("~")
+    public static let current = try! Path.Component(".")
+    public static let parent = try! Path.Component("..")
+}
+
 // MARK: Equatable
 
 extension Path.Component: Equatable {

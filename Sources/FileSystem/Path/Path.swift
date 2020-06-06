@@ -29,7 +29,7 @@ public struct Path {
     public init<T: Collection>(components: T) where T.Element == Component {
         self.components = !components.isEmpty
             ? [Component](components)
-            : ["."]
+            : [.current]
     }
 
 
@@ -85,8 +85,9 @@ extension Path {
 
     public init<T: StringProtocol>(_ path: T) throws {
         #if !os(Windows)
+        // replacing "/" with [""]
         guard path != String(Path.separator) else {
-            components = [""]
+            components = [.empty]
             return
         }
         #endif
@@ -110,7 +111,7 @@ extension Path {
     }
 
     public mutating func expandTilde() throws {
-        guard type == .relative, components.first == "~" else {
+        guard type == .relative, components.first == .home else {
             return
         }
         guard let home = Environment["HOME"] else {
