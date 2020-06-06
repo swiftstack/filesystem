@@ -133,14 +133,6 @@ extension Path {
     }
 }
 
-// MARK: ExpressibleByStringLiteral
-
-extension Path: ExpressibleByStringLiteral {
-    public init(stringLiteral value: String) {
-        self.init(value)
-    }
-}
-
 // MARK: Equatable
 
 extension Path: Equatable {

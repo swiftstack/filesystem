@@ -35,14 +35,6 @@ extension Path.Component: CustomStringConvertible {
 }
 
 
-// MARK: ExpressibleByStringLiteral
-
-extension Path.Component: ExpressibleByStringLiteral {
-    public init(stringLiteral value: String) {
-        self = .init(value)
-    }
-}
-
 // MARK: Parsing path string
 
 extension Array where Element == Path.Component {

@@ -152,15 +152,6 @@ extension Directory {
     }
 }
 
-// MARK: ExpressibleByStringLiteral
-
-extension Directory: ExpressibleByStringLiteral {
-    convenience
-    public init(stringLiteral value: String) {
-        self.init(at: value)
-    }
-}
-
 // MARK: Equatable
 
 extension Directory: Equatable {

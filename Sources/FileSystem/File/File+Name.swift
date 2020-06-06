@@ -19,9 +19,3 @@ extension File {
         }
     }
 }
-
-extension File.Name: ExpressibleByStringLiteral {
-    public init(stringLiteral value: String) {
-        self.value = .init(value)
-    }
-}
