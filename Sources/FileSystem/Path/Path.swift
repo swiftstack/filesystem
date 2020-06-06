@@ -142,7 +142,5 @@ extension Path: Equatable {
 // MARK: CustomStringConvertible
 
 extension Path: CustomStringConvertible {
-    public var description: String {
-        return string
-    }
+    public var description: String { string }
 }

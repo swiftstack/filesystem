@@ -151,6 +151,17 @@ extension Directory: Equatable {
     }
 }
 
+extension Optional where Wrapped == Directory {
+    public static func ==<T: StringProtocol>(lhs: Self, rhs: T) -> Bool {
+        guard let lhs = lhs else { return false }
+        return lhs == rhs
+    }
+
+    public static func ==<T: StringProtocol>(lhs: T, rhs: Self) -> Bool {
+        return rhs == lhs
+    }
+}
+
 // MARK: CustomStringConvertible
 
 extension Directory: CustomStringConvertible {
