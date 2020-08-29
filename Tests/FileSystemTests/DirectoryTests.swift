@@ -72,8 +72,8 @@ final class DirectoryTests: TestCase {
         #if Xcode
         expect(Directory.current == "/private/tmp")
         #else
-        let aio = try Directory.current?.path.string.suffix(3).uppercased()
-        expect(aio == "AIO")
+        let name = Directory.current?.name.description
+        expect(name == "aio" || name == "bundle" || name == "swiftstack")
         #endif
 
         Directory.current = try Directory(at: temp)
