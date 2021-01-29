@@ -17,10 +17,16 @@ let package = Package(
     targets: [
         .target(
             name: "FileSystem",
-            dependencies: ["Platform", "Stream", "Log"]),
+            dependencies: ["Platform", "Stream", "Log"],
+            swiftSettings: [
+                .unsafeFlags(["-Xfrontend", "-enable-experimental-concurrency"])
+            ]),
         .testTarget(
             name: "FileSystemTests",
-            dependencies: ["Test", "FileSystem"]),
+            dependencies: ["Test", "FileSystem"],
+            swiftSettings: [
+                .unsafeFlags(["-Xfrontend", "-enable-experimental-concurrency"])
+            ]),
     ]
 )
 
