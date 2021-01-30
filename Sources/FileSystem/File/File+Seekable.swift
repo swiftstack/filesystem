@@ -11,30 +11,30 @@ extension File: Seekable {
 }
 
 extension Seekable {
-    public func seek(to origin: SeekOrigin) throws {
-        try seek(to: 0, from: origin)
+    public func seek(to origin: SeekOrigin) async throws {
+        try await seek(to: 0, from: origin)
     }
 }
 
 extension BufferedOutputStream: Seekable where T == File {
-    public func seek(to offset: Int, from origin: SeekOrigin) throws {
+    public func seek(to offset: Int, from origin: SeekOrigin) async throws {
         switch origin {
         case .current where offset == 0:
             return
         default:
-            try flush()
+            try await flush()
             try baseStream.seek(to: offset, from: origin)
         }
     }
 }
 
 extension BufferedInputStream: Seekable where T == File {
-    public func seek(to offset: Int, from origin: SeekOrigin) throws {
+    public func seek(to offset: Int, from origin: SeekOrigin) async throws {
         switch origin {
         case .current where offset == 0:
             return
         case .current where offset > 0 && buffered > offset:
-            try consume(count: offset)
+            try await consume(count: offset)
         default:
             clear()
             try baseStream.seek(to: offset, from: origin)
@@ -43,9 +43,9 @@ extension BufferedInputStream: Seekable where T == File {
 }
 
 extension BufferedStream: Seekable where T == File {
-    public func seek(to offset: Int, from origin: SeekOrigin) throws {
-        try inputStream.seek(to: offset, from: origin)
-        try outputStream.seek(to: offset, from: origin)
+    public func seek(to offset: Int, from origin: SeekOrigin) async throws {
+        try await inputStream.seek(to: offset, from: origin)
+        try await outputStream.seek(to: offset, from: origin)
     }
 }
 

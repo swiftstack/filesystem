@@ -20,7 +20,9 @@ public class FileLogger: LogProtocol {
             try file.create(withIntermediateDirectories: true)
         }
         let stream = try file.open(flags: .write)
-        try stream.seek(to: .end)
+        runAsyncAndBlock {
+            try! await stream.seek(to: .end)
+        }
         self.file = file
         self.stream = stream
     }
@@ -29,12 +31,12 @@ public class FileLogger: LogProtocol {
         return "[\(message.level)] \(message.payload)"
     }
 
-    public func handle(_ message: Log.Message) {
+    public func handle(_ message: Log.Message) async {
         do {
             let string = format(message)
-            try stream.write(string)
-            try stream.write("\n")
-            try stream.flush()
+            try await stream.write(string)
+            try await stream.write("\n")
+            try await stream.flush()
         } catch {
             print("can't write log message:", message)
         }
