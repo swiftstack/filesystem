@@ -21,14 +21,32 @@ let package = Package(
             swiftSettings: [
                 .unsafeFlags(["-Xfrontend", "-enable-experimental-concurrency"])
             ]),
-        .testTarget(
-            name: "FileSystemTests",
-            dependencies: ["Test", "FileSystem"],
-            swiftSettings: [
-                .unsafeFlags(["-Xfrontend", "-enable-experimental-concurrency"])
-            ]),
     ]
 )
+
+// MARK: - tests
+
+testTarget("FileSystem") { test in
+    test("Directory")
+    test("File")
+    test("FileLogger")
+    test("Path")
+}
+
+func testTarget(_ target: String, task: ((String) -> Void) -> Void) {
+    task { test in addTest(target: target, name: test) }
+}
+
+func addTest(target: String, name: String) {
+    package.targets.append(
+        .target(
+            name: "Tests/\(target)/\(name)",
+            dependencies: ["FileSystem", "Test"],
+            path: "Tests/\(target)/\(name)",
+            swiftSettings: [
+                .unsafeFlags(["-Xfrontend", "-enable-experimental-concurrency"])
+            ]))
+}
 
 // MARK: - custom package source
 
