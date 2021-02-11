@@ -11,7 +11,8 @@ extension File {
         public static let read = Flags(rawValue: 1 << 0)
         public static let write = Flags(rawValue: 1 << 1)
         public static let create = Flags(rawValue: 1 << 2)
-        public static let truncate = Flags(rawValue: 1 << 3)
+        public static let append = Flags(rawValue: 1 << 3)
+        public static let truncate = Flags(rawValue: 1 << 4)
     }
 
     // open flags use 0 for read, 1 for write and 2 for read/write
@@ -38,6 +39,9 @@ extension File {
             if flags.contains(.create) {
                 result.insert(.create)
             }
+            if flags.contains(.append) {
+                result.insert(.append)
+            }
             if flags.contains(.truncate) {
                 result.insert(.truncate)
             }
@@ -49,6 +53,7 @@ extension File {
         static let readWrite = OpenFlags(rawValue: O_RDWR)
 
         static let create = OpenFlags(rawValue: O_CREAT)
+        static let append = OpenFlags(rawValue: O_APPEND)
         static let truncate = OpenFlags(rawValue: O_TRUNC)
     }
 }

@@ -19,10 +19,7 @@ public class FileLogger: LogProtocol {
         if !file.isExists {
             try file.create(withIntermediateDirectories: true)
         }
-        let stream = try file.open(flags: .write)
-        runAsyncAndBlock {
-            try! await stream.seek(to: .end)
-        }
+        let stream = try file.open(flags: [.write, .append])
         self.file = file
         self.stream = stream
     }
