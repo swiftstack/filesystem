@@ -104,6 +104,7 @@ test.case("ReadWrite") {
             let file = try File(name: "test.read-write", at: temp)
             let stream = try file.open(flags: [.write, .create, .truncate])
             try await stream.write("test string")
+            try await stream.flush()
         }
 
         await scope {
