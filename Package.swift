@@ -19,6 +19,7 @@ let package = Package(
             name: "FileSystem",
             dependencies: ["Platform", "Stream", "Log"],
             swiftSettings: [
+                .unsafeFlags(["-Xfrontend", "-disable-availability-checking"]),
                 .unsafeFlags(["-Xfrontend", "-enable-experimental-concurrency"])
             ]),
     ]
@@ -44,6 +45,7 @@ func addTest(target: String, name: String) {
             dependencies: ["FileSystem", "Test"],
             path: "Tests/\(target)/\(name)",
             swiftSettings: [
+                .unsafeFlags(["-Xfrontend", "-disable-availability-checking"]),
                 .unsafeFlags(["-Xfrontend", "-enable-experimental-concurrency"])
             ]))
 }
