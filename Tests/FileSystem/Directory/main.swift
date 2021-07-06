@@ -63,7 +63,7 @@ test.case("RemoveWithContent") {
 }
 
 test.case("Current") {
-    expect(Directory.current?.name.description == "filesystem")
+    expect(Directory.current?.name.description.lowercased() == "filesystem")
 
     Directory.current = try Directory(at: temp)
 

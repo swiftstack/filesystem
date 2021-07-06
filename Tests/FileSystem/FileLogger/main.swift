@@ -2,16 +2,6 @@ import Test
 import FileSystem
 @testable import Log
 
-func withTempPath(task: (Path) async throws -> Void) async throws {
-    let directory = try Directory(at: "/tmp/FileLoggerTests")
-    if directory.isExists {
-        try directory.remove()
-    }
-    try directory.create()
-    try await task(directory.path)
-    try directory.remove()
-}
-
 test.case("FileLogger") {
     try await withTempPath { temp in
         await scope {

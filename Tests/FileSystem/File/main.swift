@@ -5,16 +5,6 @@ import FileSystem
 
 @testable import struct FileSystem.Permissions
 
-func withTempPath(task: (Path) async throws -> Void) async throws {
-    let directory = try Directory(at: "/tmp/FileTests")
-    if directory.isExists {
-        try directory.remove()
-    }
-    try directory.create()
-    try await task(directory.path)
-    try directory.remove()
-}
-
 test.case("Name") {
     let name = try File.Name("file")
     expect(name == "file")
@@ -24,7 +14,7 @@ test.case("Name") {
 }
 
 test.case("Init") {
-    try await withTempPath { temp in
+    try withTempPath { temp in
         let path = try temp.appending("Init")
         let file = try File(name: "Init", at: temp)
         expect(file.name == "Init")
@@ -34,7 +24,7 @@ test.case("Init") {
 }
 
 test.case("InitPath") {
-    try await withTempPath { temp in
+    try withTempPath { temp in
         let path = try temp.appending("InitPath")
         let file = try File(at: path)
         expect(file.name == "InitPath")
@@ -44,7 +34,7 @@ test.case("InitPath") {
 }
 
 test.case("InitString") {
-    try await withTempPath { temp in
+    try withTempPath { temp in
         let path = try temp.appending("InitString")
         let file = try File(at: path.string)
         expect(file.name == "InitString")
@@ -54,14 +44,14 @@ test.case("InitString") {
 }
 
 test.case("Description") {
-    try await withTempPath { temp in
+    try withTempPath { temp in
         let file = try File(name: "Description", at: temp)
         expect(file.description == "file://\(temp)/Description")
     }
 }
 
 test.case("Open") {
-    try await withTempPath { temp in
+    try withTempPath { temp in
         let file = try File(name: "Open", at: temp)
         expect(throws: File.Error.doesntExist) {
             _ = try file.open(flags: .read)
@@ -89,7 +79,7 @@ test.case("Open") {
 }
 
 test.case("CreateExists") {
-    try await withTempPath { temp in
+    try withTempPath { temp in
         let file = try File(name: "CreateExists", at: temp)
         expect(!file.isExists)
         try file.create()
@@ -97,7 +87,6 @@ test.case("CreateExists") {
     }
 }
 
-// FIXME: Concurrency Stream issue
 test.case("ReadWrite") {
     try await withTempPath { temp in
         await scope {
@@ -109,6 +98,7 @@ test.case("ReadWrite") {
 
         await scope {
             let file = try File(name: "test.read-write", at: temp)
+            // FIXME: [Concurrency] async init issue
             let string = try await String.asyncInit(reading: file, as: UTF8.self)
             expect(string == "test string")
             try file.remove()
@@ -138,7 +128,6 @@ test.case("Rename") {
     }
 }
 
-// FIXME: Concurrency Stream crash
 test.case("Lifetime") {
     var streamReader: StreamReader? = nil
 
@@ -158,6 +147,7 @@ test.case("Lifetime") {
     }
 
     await scope {
+        // FIXME: [Concurrency] async init issue
         let string = try await String.asyncInit(readingFrom: reader, as: UTF8.self)
         expect(string == "test string")
     }
@@ -188,7 +178,6 @@ test.case("StringProtocol") {
     expect(String("/file")[...] == (try File(at: "/file")))
 }
 
-// FIXME: Concurrency Stream crash
 test.case("Size") {
     try await withTempPath { temp in
         let file = try File(name: "Size", at: temp)
