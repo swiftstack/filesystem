@@ -22,7 +22,7 @@ extension Path {
 public func withTempPath(
     suffix: TempPathSuffix = .random,
     task: (Path) async throws -> Void
-) reasync throws {
+) async throws {
     try await withTempDirectory(suffix: suffix) { directory in
         try await task(directory.path)
     }
@@ -31,7 +31,7 @@ public func withTempPath(
 public func withTempDirectory(
     suffix: TempPathSuffix = .random,
     task: (Directory) async throws -> Void
-) reasync throws {
+) async throws {
     var path = Path.temp
 
     try path.append("SwiftStack")

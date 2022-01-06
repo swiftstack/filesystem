@@ -14,7 +14,7 @@ test.case("Name") {
 }
 
 test.case("Init") {
-    try withTempPath { temp in
+    try await withTempPath { temp in
         let path = try temp.appending("Init")
         let file = try File(name: "Init", at: temp)
         expect(file.name == "Init")
@@ -24,7 +24,7 @@ test.case("Init") {
 }
 
 test.case("InitPath") {
-    try withTempPath { temp in
+    try await withTempPath { temp in
         let path = try temp.appending("InitPath")
         let file = try File(at: path)
         expect(file.name == "InitPath")
@@ -34,7 +34,7 @@ test.case("InitPath") {
 }
 
 test.case("InitString") {
-    try withTempPath { temp in
+    try await withTempPath { temp in
         let path = try temp.appending("InitString")
         let file = try File(at: path.string)
         expect(file.name == "InitString")
@@ -44,14 +44,14 @@ test.case("InitString") {
 }
 
 test.case("Description") {
-    try withTempPath { temp in
+    try await withTempPath { temp in
         let file = try File(name: "Description", at: temp)
         expect(file.description == "file://\(temp)/Description")
     }
 }
 
 test.case("Open") {
-    try withTempPath { temp in
+    try await withTempPath { temp in
         let file = try File(name: "Open", at: temp)
         expect(throws: File.Error.doesntExist) {
             _ = try file.open(flags: .read)
@@ -79,7 +79,7 @@ test.case("Open") {
 }
 
 test.case("CreateExists") {
-    try withTempPath { temp in
+    try await withTempPath { temp in
         let file = try File(name: "CreateExists", at: temp)
         expect(!file.isExists)
         try file.create()
