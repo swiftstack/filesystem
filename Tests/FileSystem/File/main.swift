@@ -1,9 +1,8 @@
 import Test
 import Stream
 import Platform
-import FileSystem
 
-@testable import struct FileSystem.Permissions
+@testable import FileSystem
 
 test("Name") {
     let name = try File.Name("file")
@@ -128,7 +127,7 @@ test("Rename") {
 }
 
 test("Lifetime") {
-    var streamReader: StreamReader? = nil
+    var streamReader: StreamReader?
 
     try await withTempPath { temp in
         let file = try File(name: "test.lifetime", at: temp)

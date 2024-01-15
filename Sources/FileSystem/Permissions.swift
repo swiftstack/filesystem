@@ -24,8 +24,8 @@ public struct Permissions: RawRepresentable {
     public init(
         owner: PermissionSet,
         group: PermissionSet,
-        others: PermissionSet)
-    {
+        others: PermissionSet
+    ) {
         self.owner = owner
         self.group = group
         self.others = others

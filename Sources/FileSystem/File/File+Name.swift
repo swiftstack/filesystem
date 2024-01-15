@@ -28,11 +28,11 @@ extension File.Name {
 // MARK: Equatable
 
 extension File.Name: Equatable {
-     public static func ==<T: StringProtocol>(lhs: Self, rhs: T) -> Bool {
+     public static func == <T: StringProtocol>(lhs: Self, rhs: T) -> Bool {
         return lhs.value.value == rhs
     }
 
-    public static func ==<T: StringProtocol>(lhs: T, rhs: Self) -> Bool {
+    public static func == <T: StringProtocol>(lhs: T, rhs: Self) -> Bool {
         return rhs == lhs
     }
 }

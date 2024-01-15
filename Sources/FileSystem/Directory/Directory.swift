@@ -48,8 +48,8 @@ public final class Directory {
 
     public func create(
         withIntermediateDirectories: Bool = true,
-        permissions: Permissions = .directory) throws
-    {
+        permissions: Permissions = .directory
+    ) throws {
         try Directory.create(
             at: path,
             withIntermediateDirectories: withIntermediateDirectories,
@@ -89,8 +89,8 @@ extension Directory {
     public static func create(
         at path: Path,
         withIntermediateDirectories: Bool = true,
-        permissions: Permissions = .directory) throws
-    {
+        permissions: Permissions = .directory
+    ) throws {
         func createCurrent() throws {
             try system { mkdir(path.string, permissions.rawMask) }
         }
@@ -142,22 +142,22 @@ extension Directory: Equatable {
         return lhs.name == rhs.name && lhs.location == rhs.location
     }
 
-    public static func ==<T: StringProtocol>(lhs: Directory, rhs: T) -> Bool {
+    public static func == <T: StringProtocol>(lhs: Directory, rhs: T) -> Bool {
         return lhs.path.string == rhs
     }
 
-    public static func ==<T: StringProtocol>(lhs: T, rhs: Directory) -> Bool {
+    public static func == <T: StringProtocol>(lhs: T, rhs: Directory) -> Bool {
         return rhs == lhs
     }
 }
 
 extension Optional where Wrapped == Directory {
-    public static func ==<T: StringProtocol>(lhs: Self, rhs: T) -> Bool {
+    public static func == <T: StringProtocol>(lhs: Self, rhs: T) -> Bool {
         guard let lhs = lhs else { return false }
         return lhs == rhs
     }
 
-    public static func ==<T: StringProtocol>(lhs: T, rhs: Self) -> Bool {
+    public static func == <T: StringProtocol>(lhs: T, rhs: Self) -> Bool {
         return rhs == lhs
     }
 }

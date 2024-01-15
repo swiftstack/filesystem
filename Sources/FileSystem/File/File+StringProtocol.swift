@@ -54,11 +54,9 @@ extension File {
     }
 
     public static func rename<OldName, NewName, Path>(
-        _ old: OldName, to new: NewName, at path: Path) throws
-        where
-        OldName: StringProtocol,
-        NewName: StringProtocol,
-        Path: StringProtocol
+        _ old: OldName, to new: NewName, at path: Path
+    ) throws where
+        OldName: StringProtocol, NewName: StringProtocol, Path: StringProtocol
     {
         try File.rename(.init(old), to: .init(new), at: .init(path))
     }

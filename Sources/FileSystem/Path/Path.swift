@@ -130,11 +130,11 @@ extension Path {
 // MARK: Equatable
 
 extension Path: Equatable {
-    public static func ==<T: StringProtocol>(lhs: Path, rhs: T) -> Bool {
+    public static func == <T: StringProtocol>(lhs: Path, rhs: T) -> Bool {
         return lhs.string == rhs
     }
 
-    public static func ==<T: StringProtocol>(lhs: T, rhs: Path) -> Bool {
+    public static func == <T: StringProtocol>(lhs: T, rhs: Path) -> Bool {
         return rhs == lhs
     }
 }

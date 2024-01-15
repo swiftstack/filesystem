@@ -40,8 +40,8 @@ public class File {
 
     func open(
         _ flags: Flags = .read,
-        _ permissions: Permissions = .file) throws
-    {
+        _ permissions: Permissions = .file
+    ) throws {
         guard self.descriptor == nil else {
             throw Error.alreadyOpened
         }
@@ -103,8 +103,8 @@ extension File {
         _ name: Name,
         at path: Path,
         withIntermediateDirectories: Bool,
-        permissions: Permissions = .file) throws
-    {
+        permissions: Permissions = .file
+    ) throws {
         try File(name: name, at: path).create(
             withIntermediateDirectories: withIntermediateDirectories,
             permissions: permissions)
@@ -122,11 +122,11 @@ extension File: Equatable {
         return lhs.name == rhs.name && lhs.location == rhs.location
     }
 
-    public static func ==<T: StringProtocol>(lhs: File, rhs: T) -> Bool {
+    public static func == <T: StringProtocol>(lhs: File, rhs: T) -> Bool {
         return lhs.path.string == rhs
     }
 
-    public static func ==<T: StringProtocol>(lhs: T, rhs: File) -> Bool {
+    public static func == <T: StringProtocol>(lhs: T, rhs: File) -> Bool {
         return rhs == lhs
     }
 }

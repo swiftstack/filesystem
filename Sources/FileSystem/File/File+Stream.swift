@@ -7,8 +7,8 @@ extension File {
     public func open(
         flags: Flags = .read,
         permissions: Permissions = .file,
-        bufferSize: Int = 4096) throws -> Stream
-    {
+        bufferSize: Int = 4096
+    ) throws -> Stream {
         do {
             try open(flags, permissions)
             return BufferedStream(baseStream: self, capacity: bufferSize)
@@ -21,8 +21,8 @@ extension File {
 extension File: Stream {
     public func read(
         to buffer: UnsafeMutableRawPointer,
-        byteCount: Int) throws -> Int
-    {
+        byteCount: Int
+    ) async throws -> Int {
         guard let descriptor = descriptor else {
             throw Error.closed
         }
@@ -33,8 +33,8 @@ extension File: Stream {
 
     public func write(
         from buffer: UnsafeRawPointer,
-        byteCount: Int) throws -> Int
-    {
+        byteCount: Int
+    ) async throws -> Int {
         guard let descriptor = descriptor else {
             throw Error.closed
         }

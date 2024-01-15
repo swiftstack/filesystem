@@ -18,8 +18,8 @@ extension Directory {
     public static func create<Path: StringProtocol>(
         at path: Path,
         withIntermediateDirectories recursive: Bool = true,
-        permissions: Permissions = .directory) throws
-    {
+        permissions: Permissions = .directory
+    ) throws {
         try create(
             at: .init(path),
             withIntermediateDirectories: recursive,

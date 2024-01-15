@@ -38,17 +38,17 @@ extension Path.Component {
 // MARK: Equatable
 
 extension Path.Component: Equatable {
-    public static func ==<T: StringProtocol>(lhs: Self, rhs: T) -> Bool {
+    public static func == <T: StringProtocol>(lhs: Self, rhs: T) -> Bool {
         lhs.value == rhs
     }
 
-    public static func ==<T: StringProtocol>(lhs: T, rhs: Self) -> Bool {
+    public static func == <T: StringProtocol>(lhs: T, rhs: Self) -> Bool {
         rhs == lhs
     }
 }
 
 extension Array where Element == Path.Component {
-    public static func ==<T: StringProtocol>(lhs: Self, rhs: Array<T>) -> Bool {
+    public static func == <T: StringProtocol>(lhs: Self, rhs: [T]) -> Bool {
         guard lhs.count == rhs.count else {
             return false
         }
@@ -60,7 +60,7 @@ extension Array where Element == Path.Component {
         return true
     }
 
-    public static func ==<T: StringProtocol>(lhs: Array<T>, rhs: Self) -> Bool {
+    public static func == <T: StringProtocol>(lhs: [T], rhs: Self) -> Bool {
         rhs == lhs
     }
 }

@@ -19,11 +19,11 @@ extension Directory.Name {
 // MARK: Equatable
 
 extension Directory.Name: Equatable {
-     public static func ==<T: StringProtocol>(lhs: Self, rhs: T) -> Bool {
+     public static func == <T: StringProtocol>(lhs: Self, rhs: T) -> Bool {
         return lhs.value.value == rhs
     }
 
-    public static func ==<T: StringProtocol>(lhs: T, rhs: Self) -> Bool {
+    public static func == <T: StringProtocol>(lhs: T, rhs: Self) -> Bool {
         return rhs == lhs
     }
 }
