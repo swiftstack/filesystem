@@ -5,7 +5,7 @@ import FileSystem
 
 @testable import struct FileSystem.Permissions
 
-test.case("Name") {
+test("Name") {
     let name = try File.Name("file")
     expect(name == "file")
     expect(throws: File.Error.invalidName) {
@@ -13,7 +13,7 @@ test.case("Name") {
     }
 }
 
-test.case("Init") {
+test("Init") {
     try await withTempPath { temp in
         let path = try temp.appending("Init")
         let file = try File(name: "Init", at: temp)
@@ -23,7 +23,7 @@ test.case("Init") {
     }
 }
 
-test.case("InitPath") {
+test("InitPath") {
     try await withTempPath { temp in
         let path = try temp.appending("InitPath")
         let file = try File(at: path)
@@ -33,7 +33,7 @@ test.case("InitPath") {
     }
 }
 
-test.case("InitString") {
+test("InitString") {
     try await withTempPath { temp in
         let path = try temp.appending("InitString")
         let file = try File(at: path.string)
@@ -43,14 +43,14 @@ test.case("InitString") {
     }
 }
 
-test.case("Description") {
+test("Description") {
     try await withTempPath { temp in
         let file = try File(name: "Description", at: temp)
         expect(file.description == "file://\(temp)/Description")
     }
 }
 
-test.case("Open") {
+test("Open") {
     try await withTempPath { temp in
         let file = try File(name: "Open", at: temp)
         expect(throws: File.Error.doesntExist) {
@@ -78,7 +78,7 @@ test.case("Open") {
     }
 }
 
-test.case("CreateExists") {
+test("CreateExists") {
     try await withTempPath { temp in
         let file = try File(name: "CreateExists", at: temp)
         expect(!file.isExists)
@@ -87,7 +87,7 @@ test.case("CreateExists") {
     }
 }
 
-test.case("ReadWrite") {
+test("ReadWrite") {
     try await withTempPath { temp in
         await scope {
             let file = try File(name: "test.read-write", at: temp)
@@ -106,7 +106,7 @@ test.case("ReadWrite") {
     }
 }
 
-test.case("Rename") {
+test("Rename") {
     let originalName = try File.Name("test.file")
     let newName = try File.Name("new-test.file")
 
@@ -128,7 +128,7 @@ test.case("Rename") {
     }
 }
 
-test.case("Lifetime") {
+test("Lifetime") {
     var streamReader: StreamReader? = nil
 
     try await withTempPath { temp in
@@ -153,7 +153,7 @@ test.case("Lifetime") {
     }
 }
 
-test.case("Persmissions") {
+test("Persmissions") {
     let permissions = Permissions.file
     expect(permissions.rawValue == 0x644)
     expect(permissions.owner == [.read, .write])
@@ -163,14 +163,14 @@ test.case("Persmissions") {
     expect(permissions.rawMask == S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
 }
 
-test.case("Equatable") {
+test("Equatable") {
     expect(try File(at: "/tmp/file") != (try File(at: "/file")))
     expect(try File(at: "/file") == (try File(at: "/file")))
     expect(try File(at: "/file") == String("/file"))
     expect(String("/file") == (try File(at: "/file")))
 }
 
-test.case("StringProtocol") {
+test("StringProtocol") {
     _ = try File(at: "/file"[...])
     _ = try File(name: "file"[...], at: "/"[...])
     _ = try File(name: "file"[...], at: Path("/"))
@@ -178,7 +178,7 @@ test.case("StringProtocol") {
     expect(String("/file")[...] == (try File(at: "/file")))
 }
 
-test.case("Size") {
+test("Size") {
     try await withTempPath { temp in
         let file = try File(name: "Size", at: temp)
         try file.create()
@@ -190,4 +190,4 @@ test.case("Size") {
     }
 }
 
-test.run()
+await run()

@@ -2,88 +2,88 @@ import Test
 import Platform
 import FileSystem
 
-test.case("Components") {
+test("Components") {
     let path = try Path("/")
     expect(path == "/")
     expect(path.components == [""])
 }
 
-test.case("Description") {
+test("Description") {
     let path = try Path("/tmp/test")
     expect(path.description == "/tmp/test")
 }
 
-test.case("AbsolutePath") {
+test("AbsolutePath") {
     let path = try Path("/tmp/test")
     expect(path.components == ["", "tmp", "test"])
     expect(path.type == .absolute)
 }
 
-test.case("RelativePath") {
+test("RelativePath") {
     let path = try Path("tmp/test")
     expect(path.components == ["tmp", "test"])
     expect(path.type == .relative)
 }
 
-test.case("String") {
+test("String") {
     let string = "/tmp/test"
     let path = try Path(string)
     expect(path.components == ["", "tmp", "test"])
     expect(path.string == string)
 }
 
-test.case("Append") {
+test("Append") {
     var path = try Path("/tmp")
     try path.append("test")
     expect(path.string == "/tmp/test")
 }
 
-test.case("Appending") {
+test("Appending") {
     let path = try Path("/tmp")
     let test = try path.appending("test")
     expect(test.string == "/tmp/test")
 }
 
-test.case("AppendingMany") {
+test("AppendingMany") {
     let path = try Path("/tmp")
     let test = try path.appending("one/two")
     expect(test.string == "/tmp/one/two")
     expect(test.components == ["", "tmp", "one", "two"])
 }
 
-test.case("AppendComponent") {
+test("AppendComponent") {
     var path = try Path("/tmp")
     try path.append("test")
     expect(path.string == "/tmp/test")
 }
 
-test.case("AppendingComponent") {
+test("AppendingComponent") {
     let path = try Path("/tmp")
     let test = try Path.Component("test")
     let combined = path.appending(test)
     expect(combined.string == "/tmp/test")
 }
 
-test.case("AppendPath") {
+test("AppendPath") {
     var path = try Path("/tmp")
     try path.append(Path("test"))
     expect(path.string == "/tmp/test")
 }
 
-test.case("AppendingPath") {
+test("AppendingPath") {
     let path = try Path("/tmp")
     let test = try Path("test")
     let combined = path.appending(test)
     expect(combined.string == "/tmp/test")
 }
 
-test.case("DeletingLastComponent") {
+test("DeletingLastComponent") {
     let path = try Path("/tmp/test")
     let tmp = path.deletingLastComponent
     expect(tmp.string == "/tmp")
 }
 
-test.case("ExpandTilde") {
+test("ExpandTilde") {
     // TODO: Fix the CI
     guard let home = Environment["HOME"],
         !home.isEmpty else {
@@ -106,7 +106,7 @@ test.case("ExpandTilde") {
     expect(homeTest.string.suffix(5) == "/test")
 }
 
-test.case("Equatable") {
+test("Equatable") {
     let pathString: String = "/"
     let path: Path = try .init(pathString)
     expect(path == path)
@@ -114,7 +114,7 @@ test.case("Equatable") {
     expect(pathString == path)
 }
 
-test.case("StringProtocol") {
+test("StringProtocol") {
     let pathSubstring: Substring = "/"[...]
     let pathComponentSubstring: Substring = "component"[...]
 
@@ -126,4 +126,4 @@ test.case("StringProtocol") {
     _ = try path.appending(pathComponentSubstring)
 }
 
-test.run()
+await run()

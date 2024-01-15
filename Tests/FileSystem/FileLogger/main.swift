@@ -2,7 +2,7 @@ import Test
 import FileSystem
 @testable import Log
 
-test.case("FileLogger") {
+test("FileLogger") {
     try await withTempPath { temp in
         await scope {
             let file = try File(name: "logger", at: temp)
@@ -23,4 +23,4 @@ test.case("FileLogger") {
     }
 }
 
-test.run()
+await run()

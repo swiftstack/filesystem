@@ -7,39 +7,39 @@ let temp = try! Path("/tmp/DirectoryTests")
 // set up
 try? Directory.create(at: temp)
 
-test.case("Name") {
+test("Name") {
     let name = try Directory.Name("test")
     expect(name == "test")
 }
 
-test.case("Location") {
+test("Location") {
     let directory = try Directory(name: "test", at: "/tmp")
     expect(directory.location == "/tmp")
 }
 
-test.case("Path") {
+test("Path") {
     let directory = try Directory(at: "/tmp")
     expect(directory.path == "/tmp")
 }
 
-test.case("Description") {
+test("Description") {
     let directory = try Directory(name: "test", at: "/tmp")
     expect(directory.description == "/tmp/test")
 }
 
-test.case("Exists") {
+test("Exists") {
     let directory = try Directory(at: temp.appending("testExists"))
     expect(!directory.isExists)
 }
 
-test.case("Create") {
+test("Create") {
     let directory = try Directory(at: temp.appending("testCreate"))
     expect(!directory.isExists)
     try directory.create()
     expect(directory.isExists)
 }
 
-test.case("CreateIntermediate") {
+test("CreateIntermediate") {
     let path = try temp.appending("testCreateIntermediate/one/two")
     let directory = try Directory(at: path)
 
@@ -48,21 +48,21 @@ test.case("CreateIntermediate") {
     expect(directory.isExists)
 }
 
-test.case("Remove") {
+test("Remove") {
     let directory = try Directory(at: temp.appending("testRemove"))
     try directory.create()
     try directory.remove()
     expect(!directory.isExists)
 }
 
-test.case("RemoveWithContent") {
+test("RemoveWithContent") {
     let path = try temp.appending("testRemoveWithContent")
     try Directory.create(at: path.appending("one"))
     try Directory.remove(at: path)
     expect(!Directory.isExists(at: path))
 }
 
-test.case("Current") {
+test("Current") {
     expect(Directory.current?.name.description.lowercased() == "filesystem")
 
     Directory.current = try Directory(at: temp)
@@ -74,7 +74,7 @@ test.case("Current") {
     #endif
 }
 
-test.case("ChangeWorkingDirectory") {
+test("ChangeWorkingDirectory") {
     guard let previous = Directory.current else {
         fail()
         return
@@ -93,13 +93,13 @@ test.case("ChangeWorkingDirectory") {
     try Directory.changeWorkingDirectory(to: previous.path)
 }
 
-test.case("InitFromString") {
+test("InitFromString") {
     let path: String = "/"
     let directory = try Directory(at: path)
     expect(directory.isExists)
 }
 
-test.case("Contents") {
+test("Contents") {
     let temp = try temp.appending("testContents")
     let dir1 = try Directory(name: "dir1", at: temp.string)
     try dir1.create()
@@ -110,7 +110,7 @@ test.case("Contents") {
     expect(contents == [.directory(dir1)])
 }
 
-test.case("Equatable") {
+test("Equatable") {
     let rootDirectoryString = "/"
     let tempDirectoryString = "/tmp"
 
@@ -124,7 +124,7 @@ test.case("Equatable") {
     expect(rootDirectoryString == rootDirectory)
 }
 
-test.case("StringProtocol") {
+test("StringProtocol") {
     _ = try Directory(at: "/tmp"[...])
     _ = try Directory(name: "tmp"[...], at: "/"[...])
     expect(try Directory(at: "/") == String("/")[...])
@@ -134,4 +134,4 @@ test.case("StringProtocol") {
 // tear down
 try Directory.remove(at: temp)
 
-test.run()
+await run()
