@@ -98,8 +98,7 @@ test("ReadWrite") {
 
         await scope {
             let file = try File(name: "test.read-write", at: temp)
-            // FIXME: [Concurrency] async init issue
-            let string = try await String.asyncInit(reading: file, as: UTF8.self)
+            let string = try await String(reading: file, as: UTF8.self)
             expect(string == "test string")
             try file.remove()
         }
@@ -147,8 +146,7 @@ test("Lifetime") {
     }
 
     await scope {
-        // FIXME: [Concurrency] async init issue
-        let string = try await String.asyncInit(readingFrom: reader, as: UTF8.self)
+        let string = try await String(readingFrom: reader, as: UTF8.self)
         expect(string == "test string")
     }
 }
