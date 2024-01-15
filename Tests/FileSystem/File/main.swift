@@ -127,7 +127,7 @@ test("Rename") {
 }
 
 test("Lifetime") {
-    var streamReader: StreamReader?
+    var streamReader: (any StreamReader)?
 
     try await withTempPath { temp in
         let file = try File(name: "test.lifetime", at: temp)
